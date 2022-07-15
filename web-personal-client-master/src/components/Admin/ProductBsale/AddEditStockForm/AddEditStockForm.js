@@ -1,36 +1,35 @@
 import React, { useState, useEffect } from "react";
 import { Form, Icon, Input, Button, notification, message } from "antd";
 
-import { addProductApi, updateProductApi } from "../../../../api/product";
-import { addProductApi, updateProductApi } from "../../../../api/stock";
+import { addStockApi, updateStockApi } from "../../../../api/stock";
 import "./AddEditProductForm.scss";
 
 export default function AddEditProductForm(props) {
-  const { setIsVisibleModal, setReloadProducts, product } = props;
-  const [productData, setProductData] = useState({});
+  const { setIsVisibleModal, setReloadStocks, stock } = props;
+  const [stockData, setStockData] = useState({});
 
   useEffect(() => {
-    product ? setProductData(product) : setProductData({});
-  }, [product]);
+    stock ? setStockData(stock) : setStockData({});
+  }, [stock]);
 
-  const addProduct= e => {
+  const addStock= e => {
     e.preventDefault();
 
-    if (!productData.id) {
+    if (!stockData.id) {
       notification["error"]({
         message: "El id del producto es obligatorio"
       });
     } else {
-      addProductApi(productData)
+      addStockApi(stockData)
         .then(response => {
     const typeNotification = response.code === 200 ? "success" : "warning";
           notification[typeNotification]({
             message: response.message
           });
           setIsVisibleModal(false);
-          setProductData({});
-          setReloadProducts();
-          setReloadProducts(true);
+          setStockData({});
+          setReloadStocks();
+          setReloadStocks(true);
           
 
         })
@@ -42,10 +41,10 @@ export default function AddEditProductForm(props) {
     }
   };
 
-  const updateProduct = e => {
+  const updateStock = e => {
     e.preventDefault();
 
-    updateProductApi(product.id, productData)
+    updateStockApi(stock.id, stockData)
       .then(response => {
        
         const typeNotification = response.code === 200 ? "success" : "warning";
@@ -55,8 +54,8 @@ export default function AddEditProductForm(props) {
         });
         console.log(response);
         setIsVisibleModal(false);
-        setProductData({});
-        setReloadProducts(true);
+        setStockData({});
+        setReloadStocks(true);
        
       })
       .catch(() => {
@@ -69,42 +68,42 @@ export default function AddEditProductForm(props) {
   return (
     <div className="add-edit-course-form">
       <AddEditForm
-        product={product}
-        addProduct={addProduct}
-        updateProduct={updateProduct}
-        productData={productData}
-        setProductData={setProductData}
+        stock={stock}
+        addStock={addStock}
+        updateStock={updateStock}
+        stockData={stockData}
+        setStockData={setStockData}
       />
     </div>
   );
 }
 
 function AddEditForm(props) {
-  const { product, addProduct, updateProduct, productData, setProductData } = props;
+  const { stock, addStock, updateStock, stockData, setStockData } = props;
 
   return (
     <Form
       className="form-add-edit"
-      onSubmit={product ? updateProduct : addProduct}
+      onSubmit={stock ? updateStock : addStock}
     >
       <Form.Item>
         <Input
           prefix={<Icon type="key" />}
           placeholder="ID del curso"
-          value={productData.id}
+          value={stockData.id}
           onChange={e =>
-            setProductData({ ...productData, id: e.target.value })
+            setStockData({ ...stockData, id: e.target.value })
           }
-          disabled={product ? true : false}
+          disabled={stock ? true : false}
         />
       </Form.Item>
       <Form.Item>
         <Input
           prefix={<Icon type="key" />}
           placeholder="nombre del producto"
-          value={productData.name}
+          value={stockData.name}
           onChange={e =>
-            setProductData({ ...productData, name: e.target.value })
+            setStockData({ ...stockData, name: e.target.value })
           }
         />
       </Form.Item>
@@ -112,9 +111,9 @@ function AddEditForm(props) {
         <Input
           prefix={<Icon type="key" />}
           placeholder="Permite decimal"
-          value={productData.allowDecimal}
+          value={stockData.allowDecimal}
           onChange={e =>
-            setProductData({ ...productData, allowDecimal: e.target.value })
+            setStockData({ ...stockData, allowDecimal: e.target.value })
           }
         />
       </Form.Item>
@@ -122,9 +121,9 @@ function AddEditForm(props) {
         <Input
           prefix={<Icon type="gift" />}
           placeholder="Controla Stock?"
-          value={productData.stockControl}
+          value={stockData.stockControl}
           onChange={e =>
-            setProductData({ ...productData, stockControl: e.target.value })
+            setStockData({ ...stockData, stockControl: e.target.value })
           }
         />
       </Form.Item>
@@ -132,9 +131,9 @@ function AddEditForm(props) {
         <Input
           prefix={<Icon type="dollar" />}
           placeholder="Tipo de producto?"
-          value={productData.productTypeId}
+          value={stockData.productTypeId}
           onChange={e =>
-            setProductData({ ...productData, productTypeId: e.target.value })
+            setStockData({ ...stockData, productTypeId: e.target.value })
           }
         />
       </Form.Item>
@@ -142,16 +141,16 @@ function AddEditForm(props) {
         <Input
           prefix={<Icon type="dollar" />}
           placeholder="0 activo, 1 inactivo"
-          value={productData.state}
+          value={stockData.state}
           onChange={e =>
-            setProductData({ ...productData, state: e.target.value })
+            setStockData({ ...stockData, state: e.target.value })
           }
         />
       </Form.Item>
      
       <Form.Item>
         <Button type="primary" htmlType="submit" className="btn-submit">
-          {product ? "Actualizar producto" : "Crear producto"}
+          {stock ? "Actualizar producto" : "Crear producto"}
         </Button>
       </Form.Item>
     </Form>

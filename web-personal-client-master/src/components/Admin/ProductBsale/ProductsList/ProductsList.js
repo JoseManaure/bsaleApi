@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { List, Button, Icon, Modal as ModalAntd, notification } from "antd";
 import DragSortableList from "react-drag-sortable";
 import Modal from "../../../Modal";
-import AddEditProductForm from "../AddEditProductForm";
+import AddEditProductForm from "../AddEditStockForm";
 import {
   getProductsBsaleApi,
   deleteProductApi,
