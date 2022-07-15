@@ -5,7 +5,7 @@ export function getStocksApi() {
   const token = "9a942100d7571ec0a06041368e02a23173577f9a";
   const params = {
     method: "GET",
-    headers: {
+    headers: {  
       "Content-Type": "application/json",
       access_token: token,
     }
@@ -24,7 +24,7 @@ export function getStocksApi() {
 
 
 export function getStocksBsaleApi(id){
-  const url = `${basePathB}/${apiVersionB}/price_lists/3/details/3789.json`;
+  const url = `${basePathB}/${apiVersionB}/price_lists/3/variants/${id}.json`;
 const token = "9a942100d7571ec0a06041368e02a23173577f9a";
 
     const params = {

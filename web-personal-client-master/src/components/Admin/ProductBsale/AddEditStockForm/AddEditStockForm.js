@@ -14,7 +14,6 @@ export default function AddEditProductForm(props) {
 
   const addStock= e => {
     e.preventDefault();
-
     if (!stockData.id) {
       notification["error"]({
         message: "El id del producto es obligatorio"
