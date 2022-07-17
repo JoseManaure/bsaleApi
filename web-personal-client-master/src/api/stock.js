@@ -24,7 +24,7 @@ export function getStocksApi() {
 
 
 export function getStocksBsaleApi(id){
-  const url = `${basePathB}/${apiVersionB}/price_lists/3/variants/${id}.json`;
+  const url = `${basePathB}/${apiVersionB}/price_lists/3/details/${id}.json`;
 const token = "9a942100d7571ec0a06041368e02a23173577f9a";
 
     const params = {
