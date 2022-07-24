@@ -15,8 +15,8 @@
   }
 
   &__content {
-    min-height: calc(100vh - 65px);
-    padding: 90px 25px 25px 25px;
+    min-height: calc(100vh - 15px);
+    padding: 90px -90px 0px 0px;
   }
 
   &__footer {

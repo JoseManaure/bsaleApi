@@ -1,27 +1,5 @@
 import { basePathB , apiVersionB} from "./config";
 
-export function getStocksApi() {
-  const url = `${basePathB}/${apiVersionB}/price_lists/3/details.json?limit=10&expand=[variant]`;
-  const token = "9a942100d7571ec0a06041368e02a23173577f9a";
-  const params = {
-    method: "GET",
-    headers: {  
-      "Content-Type": "application/json",
-      access_token: token,
-    }
-  };
-  return fetch(url, params)
-    .then(response => {
-      return response.json();
-    })
-    .then(result => {
-      return result;
-    })
-    .catch(err => {
-      return err;
-    });
-}
-
 export function getVariantsApi() {
   const url = `${basePathB}/${apiVersionB}/price_lists/3/details.json?limit=10&expand=[variant]`;
   const token = "9a942100d7571ec0a06041368e02a23173577f9a";

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 
 import { Table,List, Button, Icon, Modal as ModalAntd, notification } from "antd";
-import DragSortableList from "react-drag-sortable";
 import Modal from "../../../Modal";
 import AddEditProductForm from "../AddEditProductForm";
 import {
@@ -70,17 +69,17 @@ export default function VariantStocks(props) {
 const columns = [
   {
     title: 'Name',
-    dataIndex: 'variant.id',
+    dataIndex: 'id',
     key: 'name',
   },
   {
     title: 'Age',
-    dataIndex: 'variant.href',
+    dataIndex: 'href',
     key: 'age',
   },
   {
     title: 'Address',
-    dataIndex: 'variant.id',
+    dataIndex: 'variantValue',
     key: 'address',
   },
 ];
@@ -122,11 +121,11 @@ const columns = [
       <div className="courses-list__items">
         {listVariants.length === 0 && (
           <h2 style={{ textAlign: "center", margin: 0 }}>
-            No tienes variant creados
+              No tienes variant creados
           </h2>
         )} 
-        <Table dataSource={variants} columns={columns} />
-        </div>
+            <Table dataSource={variants} columns={columns} />
+       </div>
       <Modal
         title={modalTitle}
         isVisible={isVisibleModal}
@@ -143,14 +142,14 @@ function Variant(props) {
   const [variantData, setVariantData] = useState(null);
   
   useEffect(() => {
-    getVariantsBsaleApi(variant.id).then(response => {
+    getVariantsBsaleApi(variant.id >= 255).then(response => {
       if (response.code !== 200) {
         notification["warning"]({
           message: `La variante con el id ${variant.id} no se ha encontrado.`
         }); 
       }
-      setVariantData(response.data.items[0]);
-      console.log(response.data);
+      setVariantData(response.data.items);
+      console.log(response.data.items);
     });
   }, [variant]);
 

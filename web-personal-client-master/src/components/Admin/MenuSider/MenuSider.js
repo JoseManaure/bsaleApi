@@ -55,7 +55,7 @@ function MenuSider(props) {
         <Menu.Item key="/admin/stock">
           <Link to="/admin/stock">
             <Icon type="message" />
-            <span className="nac-text">Stock Disponible</span>
+            <span className="nac-text">Lita de Precios</span>
           </Link>
         </Menu.Item>
       </Menu>
