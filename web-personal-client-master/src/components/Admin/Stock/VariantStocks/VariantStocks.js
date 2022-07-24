@@ -1,21 +1,21 @@
 import React, { useState, useEffect } from "react";
 
-import { List, Button, Icon, Modal as ModalAntd, notification } from "antd";
+import { Table,List, Button, Icon, Modal as ModalAntd, notification } from "antd";
 import DragSortableList from "react-drag-sortable";
 import Modal from "../../../Modal";
 import AddEditProductForm from "../AddEditProductForm";
 import {
-  getStocksBsaleApi,
   deleteProductApi,
+  getVariantsBsaleApi
 } from "../../../../api/stock";
 
 import "./ProductstList.scss";
 
 const { confirm } = ModalAntd;
 
-export default function ListStocks(props) {
-  const { stocks, setReloadStocks } = props;
-  const [listStocks, setListStocks] = useState([]);
+export default function VariantStocks(props) {
+  const { variants, setReloadVariants } = props;
+  const [listVariants, setListVariants] = useState([]);
 
   const [isVisibleModal, setIsVisibleModal] = useState(false);
 
@@ -23,22 +23,22 @@ export default function ListStocks(props) {
   const [modalContent, setModalContent] = useState(null);
 
   useEffect(() => {
-    const listStockArray = [];
-    stocks.forEach(stock => {
-        listStockArray.push({
+    const listVariantArray = [];
+    variants.forEach(variant => {
+        listVariantArray.push({
         content: (
-          <Stock
-            stock={stock}
+          <Variant
+            variant={variant}
               // deleteProduct={deleteProduct}
               // editProductModal={editProductModal}
           />
         )
       });
     });
-    setListStocks(listStockArray);
+    setListVariants(listVariantArray);
    
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [stocks]); 
+  }, [variants]); 
 
 
 
@@ -48,41 +48,60 @@ export default function ListStocks(props) {
     setModalContent(
       <AddEditProductForm
         setIsVisibleModal={setIsVisibleModal}
-        setReloadStocks={setReloadStocks}
+        setReloadVariants={setReloadVariants}
       />
     );
   };
 
 
-  const editProductModal = stock => {
+  const editVariantModal = variant => {
     setIsVisibleModal(true);
     setModalTitle("Actualizando producto");
     setModalContent(
       <AddEditProductForm
         setIsVisibleModal={setIsVisibleModal}
-        setReloadStocks={setReloadStocks}
-        stock={stock}
+        setReloadVariants={setReloadVariants}
+        variant={variant}
       />
     );
   };
 
-  const deleteProduct = stock => {
+
+const columns = [
+  {
+    title: 'Name',
+    dataIndex: 'variant.id',
+    key: 'name',
+  },
+  {
+    title: 'Age',
+    dataIndex: 'variant.href',
+    key: 'age',
+  },
+  {
+    title: 'Address',
+    dataIndex: 'variant.id',
+    key: 'address',
+  },
+];
+
+  const deleteVariant = variant => {
 
     confirm({
       title: "Eliminando product",
-      content: `¿Estas seguro de que quieres eliminar el product ${stock.idProduct}?`,
+      content: `¿Estas seguro de que quieres eliminar el product ${variant.id}?`,
       okText: "Eliminar",
       okType: "danger",
       cancelText: "Cancelar",
       onOk() {
-        deleteProductApi(stock.id)
+        deleteProductApi(variant.id)
           .then(response => {
             const typeNotification =
               response.code === 200 ? "success" : "warning";
             notification[typeNotification]({
               message: response.message
             });
-            setReloadStocks(true);
+            setReloadVariants(true);
           })
           .catch(() => {
             notification["error"]({
@@ -99,17 +118,15 @@ export default function ListStocks(props) {
           Nuevo Stock
         </Button>
       </div>
-
+     
       <div className="courses-list__items">
-        {listStocks.length === 0 && (
+        {listVariants.length === 0 && (
           <h2 style={{ textAlign: "center", margin: 0 }}>
-            No tienes stock creados
+            No tienes variant creados
           </h2>
-        )}
-        <h1>Lista de Precios BSALE</h1>
-        <DragSortableList items={listStocks}  type="vertical" />
+        )} 
+        <Table dataSource={variants} columns={columns} />
         </div>
-
       <Modal
         title={modalTitle}
         isVisible={isVisibleModal}
@@ -121,42 +138,43 @@ export default function ListStocks(props) {
   );
 }
                           
-function Stock(props) {
-  const {stock, deleteProduct, editProductModal } = props;
-  const [stockData, setStockData] = useState(null);
+function Variant(props) {
+  const {variant, deleteVariant, editVariantModal } = props;
+  const [variantData, setVariantData] = useState(null);
   
   useEffect(() => {
-    getStocksBsaleApi(stock.id).then(response => {
+    getVariantsBsaleApi(variant.id).then(response => {
       if (response.code !== 200) {
         notification["warning"]({
-          message: `El stock con el id ${stock.id} no se ha encontrado.`
+          message: `La variante con el id ${variant.id} no se ha encontrado.`
         }); 
       }
-      setStockData(response.data);
+      setVariantData(response.data.items[0]);
+      console.log(response.data);
     });
-  }, [stock]);
+  }, [variant]);
 
 
 
-  if (!stockData) {
+  if (!variantData) {
     return null;
   }
 
   return (
     <List.Item
       actions={[
-        <Button type="primary" onClick={() => editProductModal(stock)}>
+        <Button type="primary" onClick={() => editVariantModal(variant)}>
           <Icon type="edit" />
         </Button>,
-        <Button type="danger" onClick={() => deleteProduct(stock)}>
+        <Button type="danger" onClick={() => deleteVariant(variant)}>
           <Icon type="delete" />
         </Button>
       ]}
     >
       
       <List.Item.Meta
-        title={`${stockData.variantValue} | ID: ${stockData.id}`}
-        description={stockData.variantValueWithTaxes}
+        title={`Variant value:${variantData.variantValue} | ID: ${variantData.id}`}
+        description={variantData.description}
       />
     </List.Item>
   );
