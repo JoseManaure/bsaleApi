@@ -117,7 +117,7 @@ const token = "9a942100d7571ec0a06041368e02a23173577f9a";
   }
 
   export function updateStockApi(id,data) {
-    const url = `${basePathB}/${apiVersionB}/stocks/${id}.json`;
+    const url = `${basePathB}/${apiVersionB}/products/${id}.json`;
     const token = "9a942100d7571ec0a06041368e02a23173577f9a";
     const params = {
       method: "PUT",
@@ -132,7 +132,7 @@ const token = "9a942100d7571ec0a06041368e02a23173577f9a";
       return { code: response.status, data: await response.json() };
     })
     .then(result => {
-      return result;
+      return  result;
     })
     .catch(err => {
       return err;

@@ -1,7 +1,7 @@
 import { basePathB , apiVersionB} from "./config";
 
 export function getProductsApi() {
-  const url = `${basePathB}/${apiVersionB}/products.json?limit=10&state=0&offset=1`;
+  const url = `${basePathB}/${apiVersionB}/products.json?state=0&limit=100&offset=1`;
   const token = "9a942100d7571ec0a06041368e02a23173577f9a";
 
   const params = {
@@ -109,7 +109,7 @@ export function deleteProductApi(id) {
     };
     return fetch(url, params)
     .then(async response => {
-      return { code: response.status, data: await response.json() };
+      return {code: response.status, data: await response.json() };
     })
     .then(result => {
       return result;

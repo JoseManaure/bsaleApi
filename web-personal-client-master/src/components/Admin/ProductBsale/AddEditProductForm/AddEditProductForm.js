@@ -1,32 +1,33 @@
 import React, { useState, useEffect } from "react";
-import { Form, Icon, Input, Button, notification, message } from "antd";
+import { Form, Icon, Input, Button, notification, message, Row,
+  Col, } from "antd";
 
 import { addStockApi, updateStockApi } from "../../../../api/stock";
 import "./AddEditProductForm.scss";
 
 export default function AddEditProductForm(props) {
-  const { setIsVisibleModal, setReloadStocks, stock } = props;
-  const [stockData, setStockData] = useState({});
+  const { setIsVisibleModal, setReloadStocks, product } = props;
+  const [productData, setProductData] = useState({});
 
   useEffect(() => {
-    stock ? setStockData(stock) : setStockData({});
-  }, [stock]);
+    product ? setProductData(product) : setProductData({});
+  }, [product]);
 
-  const addStock= e => {
+  const addStock = e => {
     e.preventDefault();
-    if (!stockData.id) {
+    if (!productData.id) {
       notification["error"]({
         message: "El id del producto es obligatorio"
       });
     } else {
-      addStockApi(stockData)
+      addStockApi(productData)
         .then(response => {
     const typeNotification = response.code === 200 ? "success" : "warning";
           notification[typeNotification]({
             message: response.message
           });
           setIsVisibleModal(false);
-          setStockData({});
+          setProductData({});
           setReloadStocks();
           setReloadStocks(true);
           
@@ -42,116 +43,141 @@ export default function AddEditProductForm(props) {
 
   const updateStock = e => {
     e.preventDefault();
-
-    updateStockApi(stock.id, stockData)
-      .then(response => {
-       
-        const typeNotification = response.code === 200 ? "success" : "warning";
-        notification[typeNotification]({
-        
-          message: response.message
-        });
-        console.log(response);
+    updateStockApi(product.id, productData)
+    .then(response => {
+    const typeNotification = response.code === 200 ? "success" : "warning";
+    notification[typeNotification]({
+        message: "response.code"
+    })
         setIsVisibleModal(false);
-        setStockData({});
+        setProductData({});
         setReloadStocks(true);
-       
+      
       })
       .catch(() => {
         notification["error"]({
           message: "Error del servidor, intentelo más tarde."
         });
+       
       });
   };
 
   return (
     <div className="add-edit-course-form">
       <AddEditForm
-        stock={stock}
+        product={product}
         addStock={addStock}
         updateStock={updateStock}
-        stockData={stockData}
-        setStockData={setStockData}
+        productData={productData}
+        setProductData={setProductData}
       />
     </div>
   );
 }
 
 function AddEditForm(props) {
-  const { stock, addStock, updateStock, stockData, setStockData } = props;
-
+  const { product, addStock, updateStock, productData, setProductData } = props;
   return (
     <Form
-      className="form-add-edit"
-      onSubmit={stock ? updateStock : addStock}
-    >
+      className="form-add-edit" onSubmit={product ? updateStock : addStock}>
+      <Row gutter={24}>
+      <Col span={12}>
       <Form.Item>
         <Input
           prefix={<Icon type="key" />}
-          placeholder="ID del curso"
-          value={stockData.id}
+          placeholder="ID del producto"
+          value={productData.id}
           onChange={e =>
-            setStockData({ ...stockData, id: e.target.value })
+            setProductData({ ...productData, id: e.target.value })
           }
-          disabled={stock ? true : false}
+          disabled={product ? true : false}
         />
-      </Form.Item>
-      <Form.Item>
+      </Form.Item>    
+      </Col>
+      <Row gutter={24}>
+        <Col span={24}>
+        <Form.Item>
         <Input
           prefix={<Icon type="key" />}
           placeholder="nombre del producto"
-          value={stockData.name}
+          value={productData.name}
           onChange={e =>
-            setStockData({ ...stockData, name: e.target.value })
+            setProductData({ ...productData, name: e.target.value })
           }
         />
       </Form.Item>
+      </Col>
+      </Row>
+      <Form.Item>
+        <Input
+          prefix={<Icon type="key" />}
+          placeholder="Descripcion del producto"
+          value={productData.description}
+          onChange={e =>
+            setProductData({ ...productData, description: e.target.value })
+          }
+        />
+      </Form.Item> 
+      </Row>
+      <Row gutter={24}>
+      <Col span={12}>
       <Form.Item>
         <Input
           prefix={<Icon type="key" />}
           placeholder="Permite decimal"
-          value={stockData.allowDecimal}
+          value={productData.allowDecimal}
           onChange={e =>
-            setStockData({ ...stockData, allowDecimal: e.target.value })
+            setProductData({ ...productData, allowDecimal: e.target.value })
           }
         />
       </Form.Item>
+      </Col>
+      <Col span={12}>
       <Form.Item>
         <Input
           prefix={<Icon type="gift" />}
           placeholder="Controla Stock?"
-          value={stockData.stockControl}
+          value={productData.stockControl}
           onChange={e =>
-            setStockData({ ...stockData, stockControl: e.target.value })
+            setProductData({ ...productData, stockControl: e.target.value })
           }
         />
       </Form.Item>
+      </Col>
+      </Row>
+      <Row gutter={24}>
+      <Col span={12}>
       <Form.Item>
         <Input
           prefix={<Icon type="dollar" />}
           placeholder="Tipo de producto?"
-          value={stockData.productTypeId}
+          value={productData.productTypeId}
           onChange={e =>
-            setStockData({ ...stockData, productTypeId: e.target.value })
+            setProductData({ ...productData, productTypeId: e.target.value })
           }
         />
       </Form.Item>
+      </Col>
+      <Col span={12}>
       <Form.Item>
         <Input
           prefix={<Icon type="dollar" />}
           placeholder="0 activo, 1 inactivo"
-          value={stockData.state}
+          value={productData.state}
           onChange={e =>
-            setStockData({ ...stockData, state: e.target.value })
+            setProductData({ ...productData, state: e.target.value })
           }
         />
+       
       </Form.Item>
-     
+      </Col>
+      </Row>
       <Form.Item>
         <Button type="primary" htmlType="submit" className="btn-submit">
-          {stock ? "Actualizar producto" : "Crear producto"}
+          {product ? "Actualizar producto" : "Crear producto"}
         </Button>
       </Form.Item>
     </Form>
+    
   );
 }

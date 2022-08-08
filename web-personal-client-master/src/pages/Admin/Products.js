@@ -9,13 +9,15 @@ export default function Products (){
   useEffect(() => {
     getProductsApi().then(response => {
       setProducts(response.items);
+      setReloadProducts(false);
     });
-    setReloadProducts(false);
   }, [reloadProducts]);
+
 
   return (
     <div className="clients" >
       <ProductsBsale products={products} setReloadProducts={setReloadProducts} />
+      {/* <Table dataSource={products} columns={columns} />; */}
     </div>
   )
 }

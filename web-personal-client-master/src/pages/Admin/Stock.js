@@ -1,7 +1,6 @@
 import React,{useState, useEffect} from "react";
-import StockBsale from "../../components/Admin/Stock/ListStocks/ListStocks"
 import PricesListBsale from "../../components/Admin/Stock/VariantStocks"
-import {getStocksApi, getVariantsApi} from "../../api/stock";
+import { getVariantsApi} from "../../api/stock";
 import { Breadcrumb, Layout, Col,Row,Menu } from 'antd';
 
 const { Header, Content, Footer, Sider } = Layout;

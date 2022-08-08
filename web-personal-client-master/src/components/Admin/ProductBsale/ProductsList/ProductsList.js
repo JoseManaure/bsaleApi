@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { List, Button, Icon, Modal as ModalAntd, notification } from "antd";
-import DragSortableList from "react-drag-sortable";
+import { Table,List, Button, Icon, Modal as ModalAntd, notification } from "antd";
+// import DragSortableList from "react-drag-sortable";
 import Modal from "../../../Modal";
-import AddEditProductForm from "../AddEditStockForm";
+import AddEditProductForm from "../AddEditProductForm";
 import {
   getProductsBsaleApi,
   deleteProductApi,
@@ -14,27 +14,45 @@ const { confirm } = ModalAntd;
 
 export default function ProductsList(props) {
   const { products, setReloadProducts } = props;
-  const [listProducts, setListProducts] = useState([]);
   const [isVisibleModal, setIsVisibleModal] = useState(false);
   const [modalTitle, setModalTitle] = useState("");
   const [modalContent, setModalContent] = useState(null);
+  const [productData, setProductData] = useState(null);
 
-  useEffect(() => {
-    const listProductArray = [];
-    products.forEach(product => {
-      listProductArray.push({
-        content: (
-          <Product
-            product={product}
-            deleteProduct={deleteProduct}
-            editProductModal={editProductModal}
-          />
-        )
+useEffect(() => {
+  products.forEach(product => {
+  getProductsBsaleApi(product.id)
+    .then(response => {
+    if (response.code !== 200) {
+      notification["warning"]({
+        message: `El producto con el id ${product.id} no se ha encontrado.`
+      }); 
+      }
+      setProductData(response.data);
+      console.log(response.data.product_taxes87                                                                                                                                                                                    );
       });
     });
-    setListProducts(listProductArray);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [products]);
+}, [products]);
+
+if (!productData) {
+  return null;
+}
+  // useEffect(() => {
+  //   const listProductArray = [];
+  //   products.forEach(product => {
+  //     listProductArray.push({
+  //       content: (
+  //         <Product
+  //           product={product}
+  //           deleteProduct={deleteProduct}
+  //           editProductModal={editProductModal}
+  //         />
+  //       )
+  //     });
+  //   });
+  //   setListProducts(listProductArray);
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [products]);
 
         
   const addProductModal = () => {
@@ -48,28 +66,28 @@ export default function ProductsList(props) {
     );
   };
 
-  const editProductModal = product => {
+  const editProductModal = productData => {
     setIsVisibleModal(true);
     setModalTitle("Actualizando producto");
     setModalContent(
       <AddEditProductForm
         setIsVisibleModal={setIsVisibleModal}
         setReloadProducts={setReloadProducts}
-        product={product}
+        product={productData}
       />
     );
   };
 
-  const deleteProduct = product => {
+  const deleteProduct = productData => {
 
     confirm({
       title: "Eliminando product",
-      content: `¿Estas seguro de que quieres eliminar el product ${product.idProduct}?`,
+      content: `¿Estas seguro de que quieres eliminar el product ${productData.idProduct}?`,
       okText: "Eliminar",
       okType: "danger",
       cancelText: "Cancelar",
       onOk() {
-        deleteProductApi(product.id)
+        deleteProductApi(productData.id)
           .then(response => {
             const typeNotification =
               response.code === 200 ? "success" : "warning";
@@ -86,6 +104,45 @@ export default function ProductsList(props) {
       }
     });
   };
+  
+  const columns = [
+    {
+    title: 'ID',
+    dataIndex: 'id',
+    key: '  id',
+    render: titulo => <a href="post/feed">{titulo}</a>,
+  },
+  {
+    title: 'Name',
+    dataIndex: 'name',
+    key: 'name',
+  },
+  {
+    title: 'Description',
+    dataIndex: 'description',
+    key: 'description',
+  },
+  {
+    title: 'Acciones',
+    key: 'Action',
+    render: (product) =>{
+      return (
+    <List.Item
+    actions={[
+      <Button type="primary" onClick={() => editProductModal(product)}>
+        <Icon type="edit" />
+      </Button>,
+      <Button type="danger" onClick={() => deleteProduct(product)}>
+        <Icon type="delete" />
+      </Button>
+    ]}
+  >
+    
+  </List.Item>
+      )
+    }
+  }
+];
 
   return (
     <div className="courses-list">
@@ -96,12 +153,13 @@ export default function ProductsList(props) {
       </div>
 
       <div className="courses-list__items">
-        {listProducts.length === 0 && (
+        {productData.length === 0 && (
           <h2 style={{ textAlign: "center", margin: 0 }}>
             No tienes productos creados
           </h2>
         )}
-        <DragSortableList items={listProducts}  type="vertical" />
+         <Table dataSource={products} columns={columns} pagination={true} />
+        {/* <DragSortableList items={listProducts}  type="vertical" /> */}
       </div>
 
       <Modal
@@ -115,41 +173,4 @@ export default function ProductsList(props) {
   );
 }
 
-function Product(props) {
-  const { product, deleteProduct, editProductModal } = props;
-  const [productData, setProductData] = useState(null);
 
-  useEffect(() => {
-    getProductsBsaleApi(product.id).then(response => {
-      if (response.code !== 200) {
-        notification["warning"]({
-          message: `El producto con el id ${product.id} no se ha encontrado.`
-        }); 
-      }
-      setProductData(response.data);
-    });
-  }, [product]);
-
-  if (!productData) {
-    return null;
-  }
-
-  return (
-    <List.Item
-      actions={[
-        <Button type="primary" onClick={() => editProductModal(product)}>
-          <Icon type="edit" />
-        </Button>,
-        <Button type="danger" onClick={() => deleteProduct(product)}>
-          <Icon type="delete" />
-        </Button>
-      ]}
-    >
-      
-      <List.Item.Meta
-        title={`${productData.name} | ID: ${productData.id}   `}
-        description={productData.ledgerAccount}
-      />
-    </List.Item>
-  );
-}

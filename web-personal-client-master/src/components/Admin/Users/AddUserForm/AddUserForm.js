@@ -97,7 +97,6 @@ function AddForm(props) {
           </Form.Item>
         </Col>
       </Row>
-
       <Row gutter={24}>
         <Col span={12}>
           <Form.Item>

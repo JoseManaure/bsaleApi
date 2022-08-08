@@ -68,19 +68,19 @@ export default function VariantStocks(props) {
 
 const columns = [
   {
-    title: 'Name',
+    title: 'Id',
     dataIndex: 'id',
-    key: 'name',
+    key: 'id',
   },
   {
-    title: 'Age',
+    title: 'Title',
     dataIndex: 'href',
-    key: 'age',
+    key: 'variantValue',
   },
   {
-    title: 'Address',
+    title: 'Valor',
     dataIndex: 'variantValue',
-    key: 'address',
+    key: '3',
   },
 ];
 
